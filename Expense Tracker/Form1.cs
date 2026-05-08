@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
+using System.Web.Script.Serialization;
 using System.Windows.Forms;
 
 namespace Expense_Tracker
@@ -12,12 +14,15 @@ namespace Expense_Tracker
         private List<Expense> expenses = new List<Expense>();
         private int selectedExpenseId = -1;
         private int nextId = 1;
+        private string filePath = "expenses.json";
 
         public Form1()
         {
             InitializeComponent();
+            this.Text = "Expense Tracker System";
             SetupDataGridView();
-            UpdateTotal();
+            LoadData();
+            RefreshDataGridView();
         }
 
         private void SetupDataGridView()
@@ -27,6 +32,7 @@ namespace Expense_Tracker
             dataGridView1.MultiSelect = false;
             dataGridView1.ReadOnly = true;
             dataGridView1.AllowUserToAddRows = false;
+            dataGridView1.RowHeadersVisible = false;
 
             dataGridView1.Columns.Clear();
             dataGridView1.Columns.Add("Id", "ID");
@@ -36,42 +42,82 @@ namespace Expense_Tracker
             dataGridView1.Columns.Add("Date", "Date");
 
             dataGridView1.Columns["Id"].Width = 50;
-            dataGridView1.Columns["Amount"].Width = 80;
-            dataGridView1.Columns["Category"].Width = 100;
-            dataGridView1.Columns["Description"].Width = 150;
+            dataGridView1.Columns["Amount"].Width = 100;
+            dataGridView1.Columns["Category"].Width = 120;
+            dataGridView1.Columns["Description"].Width = 200;
             dataGridView1.Columns["Date"].Width = 100;
+
+            dataGridView1.Columns["Amount"].DefaultCellStyle.Format = "C2";
+            dataGridView1.Columns["Amount"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
 
             dataGridView1.CellClick += DataGridView1_CellClick;
         }
 
-        private void RefreshDataGridView()
+        private void RefreshDataGridView(List<Expense> dataSource = null)
         {
             dataGridView1.Rows.Clear();
+            List<Expense> listToDisplay = dataSource ?? expenses;
 
-            foreach (var expense in expenses)
+            foreach (var expense in listToDisplay)
             {
                 dataGridView1.Rows.Add(
                     expense.Id,
-                    expense.Amount.ToString("N2"),
+                    expense.Amount,
                     expense.Category,
                     expense.Description,
                     expense.Date.ToShortDateString()
                 );
             }
 
-            UpdateTotal();
+            UpdateTotal(listToDisplay);
         }
 
-        private void UpdateTotal()
+        private void UpdateTotal(List<Expense> list = null)
         {
-            decimal total = expenses.Sum(e => e.Amount);
-            lblTotal.Text = $"Total: {total:N2}";
+            decimal total = (list ?? expenses).Sum(e => e.Amount);
+            lblTotal.Text = $"Total: {total:C2}";
+        }
+
+        private void SaveData()
+        {
+            try
+            {
+                var serializer = new JavaScriptSerializer();
+                string json = serializer.Serialize(expenses);
+                File.WriteAllText(filePath, json);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error saving data: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void LoadData()
+        {
+            try
+            {
+                if (File.Exists(filePath))
+                {
+                    string json = File.ReadAllText(filePath);
+                    var serializer = new JavaScriptSerializer();
+                    expenses = serializer.Deserialize<List<Expense>>(json) ?? new List<Expense>();
+                    if (expenses.Count > 0)
+                    {
+                        nextId = expenses.Max(e => e.Id) + 1;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error loading data: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                expenses = new List<Expense>();
+            }
         }
 
         private void ClearInputs()
         {
             txtAmount.Clear();
-            textBox2.Clear();
+            txtDescription.Clear();
             cmbCategory.SelectedIndex = -1;
             dteDate.Value = DateTime.Now;
             selectedExpenseId = -1;
@@ -115,7 +161,7 @@ namespace Expense_Tracker
             string cleanAmount = txtAmount.Text.Replace("$", "").Trim();
             decimal amount = decimal.Parse(cleanAmount);
             string category = cmbCategory.SelectedItem.ToString();
-            string description = textBox2.Text;
+            string description = txtDescription.Text;
             DateTime date = dteDate.Value;
 
             Expense newExpense = new Expense
@@ -128,6 +174,7 @@ namespace Expense_Tracker
             };
 
             expenses.Add(newExpense);
+            SaveData();
             RefreshDataGridView();
             ClearInputs();
 
@@ -151,9 +198,10 @@ namespace Expense_Tracker
                 string cleanAmount = txtAmount.Text.Replace("$", "").Trim();
                 expense.Amount = decimal.Parse(cleanAmount);
                 expense.Category = cmbCategory.SelectedItem.ToString();
-                expense.Description = textBox2.Text;
+                expense.Description = txtDescription.Text;
                 expense.Date = dteDate.Value;
 
+                SaveData();
                 RefreshDataGridView();
                 ClearInputs();
 
@@ -178,6 +226,7 @@ namespace Expense_Tracker
                 if (expense != null)
                 {
                     expenses.Remove(expense);
+                    SaveData();
                     RefreshDataGridView();
                     ClearInputs();
 
@@ -188,7 +237,7 @@ namespace Expense_Tracker
 
         private void btnSearch_Click(object sender, EventArgs e)
         {
-            string searchText = txtSearch.Text.Trim();
+            string searchText = txtSearch.Text.Trim().ToLower();
 
             if (string.IsNullOrWhiteSpace(searchText))
             {
@@ -196,41 +245,17 @@ namespace Expense_Tracker
                 return;
             }
 
-            // Remove dollar sign if present
-            string cleanSearch = searchText.Replace("$", "").Trim();
+            var filteredExpenses = expenses.Where(ex =>
+                ex.Amount.ToString().Contains(searchText) ||
+                ex.Category.ToLower().Contains(searchText) ||
+                ex.Description.ToLower().Contains(searchText)
+            ).ToList();
 
-            if (decimal.TryParse(cleanSearch, out decimal searchAmount))
-            {
-                var filteredExpenses = expenses.Where(ex => ex.Amount == searchAmount).ToList();
-                DisplayFilteredResults(filteredExpenses);
-            }
-            else
-            {
-                MessageBox.Show("Please enter a valid numeric amount to search.", "Invalid Search", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            }
-        }
-
-        private void DisplayFilteredResults(List<Expense> filteredExpenses)
-        {
-            dataGridView1.Rows.Clear();
-
-            foreach (var expense in filteredExpenses)
-            {
-                dataGridView1.Rows.Add(
-                    expense.Id,
-                    expense.Amount.ToString("N2"),
-                    expense.Category,
-                    expense.Description,
-                    expense.Date.ToShortDateString()
-                );
-            }
-
-            decimal total = filteredExpenses.Sum(e => e.Amount);
-            lblTotal.Text = $"Total: {total:N2}";
+            RefreshDataGridView(filteredExpenses);
 
             if (filteredExpenses.Count == 0)
             {
-                MessageBox.Show("No expenses found with the specified amount.", "Search Results", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("No expenses found matching your search.", "Search Results", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 RefreshDataGridView();
             }
         }
@@ -247,26 +272,12 @@ namespace Expense_Tracker
                 {
                     txtAmount.Text = expense.Amount.ToString();
                     cmbCategory.SelectedItem = expense.Category;
-                    textBox2.Text = expense.Description;
+                    txtDescription.Text = expense.Description;
                     dteDate.Value = expense.Date;
                 }
             }
         }
 
-        private void txtSearch_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            // Allow only digits, decimal point, and control characters
-            if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar) && e.KeyChar != '.')
-            {
-                e.Handled = true;
-            }
-
-            // Allow only one decimal point
-            if (e.KeyChar == '.' && (sender as TextBox).Text.Contains("."))
-            {
-                e.Handled = true;
-            }
-        }
 
         private void txtAmount_KeyPress(object sender, KeyPressEventArgs e)
         {
@@ -289,12 +300,4 @@ namespace Expense_Tracker
         }
     }
 
-    public class Expense
-    {
-        public int Id { get; set; }
-        public decimal Amount { get; set; }
-        public string Category { get; set; }
-        public string Description { get; set; }
-        public DateTime Date { get; set; }
-    }
 }

@@ -32,13 +32,13 @@
             this.label1 = new System.Windows.Forms.Label();
             this.panel1 = new System.Windows.Forms.Panel();
             this.cmbCategory = new System.Windows.Forms.ComboBox();
-            this.textBox2 = new System.Windows.Forms.TextBox();
+            this.txtDescription = new System.Windows.Forms.TextBox();
             this.dteDate = new System.Windows.Forms.DateTimePicker();
             this.btnDelete = new System.Windows.Forms.Button();
             this.btnUpdate = new System.Windows.Forms.Button();
             this.btnAdd = new System.Windows.Forms.Button();
             this.label5 = new System.Windows.Forms.Label();
-            this.btnDescription = new System.Windows.Forms.Label();
+            this.lblDescription = new System.Windows.Forms.Label();
             this.txtAmount = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
@@ -78,13 +78,13 @@
             this.panel1.BackColor = System.Drawing.SystemColors.GradientInactiveCaption;
             this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.panel1.Controls.Add(this.cmbCategory);
-            this.panel1.Controls.Add(this.textBox2);
+            this.panel1.Controls.Add(this.txtDescription);
             this.panel1.Controls.Add(this.dteDate);
             this.panel1.Controls.Add(this.btnDelete);
             this.panel1.Controls.Add(this.btnUpdate);
             this.panel1.Controls.Add(this.btnAdd);
             this.panel1.Controls.Add(this.label5);
-            this.panel1.Controls.Add(this.btnDescription);
+            this.panel1.Controls.Add(this.lblDescription);
             this.panel1.Controls.Add(this.txtAmount);
             this.panel1.Controls.Add(this.label3);
             this.panel1.Controls.Add(this.label2);
@@ -107,13 +107,13 @@
             this.cmbCategory.Size = new System.Drawing.Size(237, 21);
             this.cmbCategory.TabIndex = 6;
             // 
-            // textBox2
+            // txtDescription
             // 
-            this.textBox2.Location = new System.Drawing.Point(141, 121);
-            this.textBox2.Multiline = true;
-            this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(237, 47);
-            this.textBox2.TabIndex = 5;
+            this.txtDescription.Location = new System.Drawing.Point(141, 121);
+            this.txtDescription.Multiline = true;
+            this.txtDescription.Name = "txtDescription";
+            this.txtDescription.Size = new System.Drawing.Size(237, 47);
+            this.txtDescription.TabIndex = 5;
             // 
             // dteDate
             // 
@@ -165,15 +165,15 @@
             this.label5.TabIndex = 2;
             this.label5.Text = "Date";
             // 
-            // btnDescription
+            // lblDescription
             // 
-            this.btnDescription.AutoSize = true;
-            this.btnDescription.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnDescription.Location = new System.Drawing.Point(16, 135);
-            this.btnDescription.Name = "btnDescription";
-            this.btnDescription.Size = new System.Drawing.Size(86, 16);
-            this.btnDescription.TabIndex = 3;
-            this.btnDescription.Text = "Description";
+            this.lblDescription.AutoSize = true;
+            this.lblDescription.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblDescription.Location = new System.Drawing.Point(16, 135);
+            this.lblDescription.Name = "lblDescription";
+            this.lblDescription.Size = new System.Drawing.Size(86, 16);
+            this.lblDescription.TabIndex = 3;
+            this.lblDescription.Text = "Description";
             // 
             // txtAmount
             // 
@@ -248,7 +248,7 @@
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(121, 16);
             this.label4.TabIndex = 6;
-            this.label4.Text = "Search by amount :";
+            this.label4.Text = "Search :";
             // 
             // Form1
             // 
@@ -285,7 +285,7 @@
         private System.Windows.Forms.Button btnUpdate;
         private System.Windows.Forms.Button btnAdd;
         private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.Label btnDescription;
+        private System.Windows.Forms.Label lblDescription;
         private System.Windows.Forms.TextBox txtAmount;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Button btnSearch;
@@ -293,7 +293,7 @@
         private System.Windows.Forms.DataGridView dataGridView1;
         private System.Windows.Forms.Label lblTotal;
         private System.Windows.Forms.ComboBox cmbCategory;
-        private System.Windows.Forms.TextBox textBox2;
+        private System.Windows.Forms.TextBox txtDescription;
         private System.Windows.Forms.DateTimePicker dteDate;
         private System.Windows.Forms.Label label4;
     }
