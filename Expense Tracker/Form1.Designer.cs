@@ -36,6 +36,7 @@
             this.dteDate = new System.Windows.Forms.DateTimePicker();
             this.btnDelete = new System.Windows.Forms.Button();
             this.btnUpdate = new System.Windows.Forms.Button();
+            this.btnClear = new System.Windows.Forms.Button();
             this.btnAdd = new System.Windows.Forms.Button();
             this.label5 = new System.Windows.Forms.Label();
             this.lblDescription = new System.Windows.Forms.Label();
@@ -82,6 +83,7 @@
             this.panel1.Controls.Add(this.dteDate);
             this.panel1.Controls.Add(this.btnDelete);
             this.panel1.Controls.Add(this.btnUpdate);
+            this.panel1.Controls.Add(this.btnClear);
             this.panel1.Controls.Add(this.btnAdd);
             this.panel1.Controls.Add(this.label5);
             this.panel1.Controls.Add(this.lblDescription);
@@ -125,7 +127,7 @@
             // btnDelete
             // 
             this.btnDelete.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
-            this.btnDelete.Location = new System.Drawing.Point(321, 271);
+            this.btnDelete.Location = new System.Drawing.Point(234, 271);
             this.btnDelete.Name = "btnDelete";
             this.btnDelete.Size = new System.Drawing.Size(93, 33);
             this.btnDelete.TabIndex = 2;
@@ -136,7 +138,7 @@
             // btnUpdate
             // 
             this.btnUpdate.BackColor = System.Drawing.Color.DeepSkyBlue;
-            this.btnUpdate.Location = new System.Drawing.Point(180, 271);
+            this.btnUpdate.Location = new System.Drawing.Point(125, 271);
             this.btnUpdate.Name = "btnUpdate";
             this.btnUpdate.Size = new System.Drawing.Size(93, 33);
             this.btnUpdate.TabIndex = 2;
@@ -144,10 +146,21 @@
             this.btnUpdate.UseVisualStyleBackColor = false;
             this.btnUpdate.Click += new System.EventHandler(this.btnUpdate_Click);
             // 
+            // btnClear
+            //
+            this.btnClear.BackColor = System.Drawing.Color.LightGray;
+            this.btnClear.Location = new System.Drawing.Point(343, 271);
+            this.btnClear.Name = "btnClear";
+            this.btnClear.Size = new System.Drawing.Size(93, 33);
+            this.btnClear.TabIndex = 2;
+            this.btnClear.Text = "Clear";
+            this.btnClear.UseVisualStyleBackColor = false;
+            this.btnClear.Click += new System.EventHandler(this.btnClear_Click);
+            //
             // btnAdd
             // 
             this.btnAdd.BackColor = System.Drawing.Color.LimeGreen;
-            this.btnAdd.Location = new System.Drawing.Point(34, 271);
+            this.btnAdd.Location = new System.Drawing.Point(16, 271);
             this.btnAdd.Name = "btnAdd";
             this.btnAdd.Size = new System.Drawing.Size(93, 33);
             this.btnAdd.TabIndex = 2;
@@ -283,6 +296,7 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Button btnDelete;
         private System.Windows.Forms.Button btnUpdate;
+        private System.Windows.Forms.Button btnClear;
         private System.Windows.Forms.Button btnAdd;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label lblDescription;
